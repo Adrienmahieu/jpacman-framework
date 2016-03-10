@@ -10,6 +10,7 @@ import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.game.Game;
+import nl.tudelft.jpacman.level.Player;
 
 /**
  * Panel displaying a game.
@@ -39,6 +40,9 @@ class BoardPanel extends JPanel {
 	 * The game to display.
 	 */
 	private final Game game;
+	
+	private int dx;
+	private int dy;
 
 	/**
 	 * Creates a new board panel that will display the provided game.
@@ -83,11 +87,23 @@ class BoardPanel extends JPanel {
 
 		g.setColor(BACKGROUND_COLOR);
 		g.fillRect(0, 0, window.width, window.height);
+		
+		Player player = game.getPlayers().get(0);
+		Square occupy = player.getSquare();
+		
+		for (int y = 0; y < board.getHeight(); y++) {
+			for (int x = 0; x < board.getWidth(); x++) {
+				if(occupy == board.squareAt(x, y)) {
+					dx = board.getWidth()/2 - x;
+					dy = board.getHeight()/2 - y;
+				}
+			}
+		}
 
 		for (int y = 0; y < board.getHeight(); y++) {
 			for (int x = 0; x < board.getWidth(); x++) {
-				int cellX = x * cellW;
-				int cellY = y * cellH;
+				int cellX = (dx + x) * cellW;
+				int cellY = (dy + y) * cellH;
 				Square square = board.squareAt(x, y);
 				render(square, g, cellX, cellY, cellW, cellH);
 			}
