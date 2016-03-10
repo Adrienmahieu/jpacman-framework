@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import nl.tudelft.jpacman.board.Board;
+import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.game.Game;
@@ -43,6 +44,10 @@ class BoardPanel extends JPanel {
 	
 	private int dx;
 	private int dy;
+	private int iwidth;
+	private int iheight;
+	
+	private int cellW = 0, cellH = 0;
 
 	/**
 	 * Creates a new board panel that will display the provided game.
@@ -82,20 +87,26 @@ class BoardPanel extends JPanel {
 	 *            The dimensions to scale the rendered board to.
 	 */
 	private void render(Board board, Graphics g, Dimension window) {
-		int cellW = window.width / board.getWidth();
-		int cellH = window.height / board.getHeight();
+		if(cellW == 0 && cellH == 0) {
+			cellW = window.width / board.getWidth();
+			cellH = window.height / board.getHeight();
+			iwidth = board.getWidth();
+			iheight = board.getHeight();
+		}
 
 		g.setColor(BACKGROUND_COLOR);
 		g.fillRect(0, 0, window.width, window.height);
 		
 		Player player = game.getPlayers().get(0);
 		Square occupy = player.getSquare();
-		
+		int px=0, py=0;
 		for (int y = 0; y < board.getHeight(); y++) {
 			for (int x = 0; x < board.getWidth(); x++) {
 				if(occupy == board.squareAt(x, y)) {
-					dx = board.getWidth()/2 - x;
-					dy = board.getHeight()/2 - y;
+					dx = iwidth/2 - x;
+					dy = iheight/2 - y;
+					px = x;
+					py = y;
 				}
 			}
 		}
@@ -108,6 +119,20 @@ class BoardPanel extends JPanel {
 				render(square, g, cellX, cellY, cellW, cellH);
 			}
 		}
+		
+		if(py > board.getHeight()-5) {
+			board.expand(Direction.SOUTH);
+		}
+		if(py < 5) {
+			board.expand(Direction.NORTH);
+		}
+		if(px < 5) {
+			board.expand(Direction.WEST);
+		}
+		if(px > board.getWidth()-5) {
+			board.expand(Direction.EAST);
+		}
+		
 	}
 
 	/**

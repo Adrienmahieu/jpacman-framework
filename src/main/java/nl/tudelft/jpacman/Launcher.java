@@ -197,4 +197,8 @@ public class Launcher {
 	public static void main(String[] args) throws IOException {
 		new Launcher().launch();
 	}
+	
+	public static final PacManSprites getSPRITE_STORE() {
+		return SPRITE_STORE;
+	}
 }

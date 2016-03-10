@@ -10,6 +10,8 @@ import nl.tudelft.jpacman.sprite.Sprite;
  * @author Jeroen Roosen 
  */
 public class BoardFactory {
+	
+	public static BoardFactory instance;
 
 	/**
 	 * The sprite store providing the sprites for the background.
@@ -25,6 +27,7 @@ public class BoardFactory {
 	 */
 	public BoardFactory(PacManSprites spriteStore) {
 		this.sprites = spriteStore;
+		instance = this;
 	}
 
 	/**

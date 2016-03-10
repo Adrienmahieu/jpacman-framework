@@ -1,5 +1,11 @@
 package nl.tudelft.jpacman.board;
 
+import java.util.Random;
+
+import nl.tudelft.jpacman.Launcher;
+import nl.tudelft.jpacman.game.GameFactory;
+import nl.tudelft.jpacman.level.PlayerFactory;
+
 /**
  * A top-down view of a matrix of {@link Square}s.
  * 
@@ -10,7 +16,7 @@ public class Board {
 	/**
 	 * The grid of squares with board[x][y] being the square at column x, row y.
 	 */
-	private final Square[][] board;
+	private Square[][] board;
 
 	/**
 	 * Creates a new board.
@@ -85,5 +91,91 @@ public class Board {
 	 */
 	public boolean withinBorders(int x, int y) {
 		return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+	}
+	
+	public void expand(Direction dir) {
+		Square[][] grid = null;
+		//GameFactory gf = new GameFactory(new PlayerFactory(Launcher.getSPRITE_STORE()));
+		BoardFactory bf = BoardFactory.instance;
+		if(dir == Direction.SOUTH) {
+			grid = new Square[this.getWidth()][this.getHeight()+5];
+			for (int x = 0; x < board.length; x++) {
+				for (int y = 0; y < board[x].length; y++) {
+					grid[x][y] = board[x][y];
+				}
+			}
+			for (int x = 0; x < board.length; x++) {
+				for (int y = board[x].length; y < board[x].length+5; y++) {
+					grid[x][y] = this.random(bf);
+				}
+			}
+
+		}
+		else if(dir == Direction.NORTH) {
+			grid = new Square[this.getWidth()][this.getHeight()+5];
+			for (int x = 0; x < board.length; x++) {
+				for (int y = 0; y < board[x].length; y++) {
+					grid[x][y+5] = board[x][y];
+				}
+			}
+			for (int x = 0; x < board.length; x++) {
+				for (int y = 0; y < 5; y++) {
+					grid[x][y] = this.random(bf);
+				}
+			}
+
+		}
+		else if(dir == Direction.WEST) {
+			grid = new Square[this.getWidth()+5][this.getHeight()];
+			for (int x = 0; x < board.length; x++) {
+				for (int y = 0; y < board[x].length; y++) {
+					grid[x+5][y] = board[x][y];
+				}
+			}
+			for (int x = 0; x < 5; x++) {
+				for (int y = 0; y < board[x].length; y++) {
+					grid[x][y] = this.random(bf);
+				}
+			}
+
+		}
+		else if(dir == Direction.EAST) {
+			grid = new Square[this.getWidth()+5][this.getHeight()];
+			for (int x = 0; x < board.length; x++) {
+				for (int y = 0; y < board[x].length; y++) {
+					grid[x][y] = board[x][y];
+				}
+			}
+			for (int x = board.length; x < board.length+5; x++) {
+				for (int y = 0; y < board[0].length; y++) {
+					grid[x][y] = this.random(bf);
+				}
+			}
+
+		}
+		this.board = grid;
+		int width = grid.length;
+		int height = grid[0].length;
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				Square square = grid[x][y];
+				for (Direction d : Direction.values()) {
+					int dirX = (width + x + d.getDeltaX()) % width;
+					int dirY = (height + y + d.getDeltaY()) % height;
+					Square neighbour = grid[dirX][dirY];
+					square.link(neighbour, d);
+				}
+			}
+		}
+	}
+	
+	public Square random(BoardFactory bf) {
+		Random r = new Random();
+		int i = r.nextInt(5);
+		if(i==0)
+			return bf.createWall();
+		else if(i>0)
+			return bf.createGround();
+		return bf.createGround();
 	}
 }
