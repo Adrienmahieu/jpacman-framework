@@ -101,40 +101,24 @@ public class Board {
 		grid = new Square[this.getWidth() + Math.abs(dir.getDeltaX()*expandSize)][this.getHeight()+ Math.abs(dir.getDeltaY()*expandSize)];
 		if(dir == Direction.SOUTH) {
 			copyGrid(board, grid, 0, 0);
-			for (int x = 0; x < board.length; x++) {
-				for (int y = board[x].length; y < board[x].length+expandSize; y++) {
-					grid[x][y] = this.random(bf);
-				}
-			}
+			instanceSquare(grid, bf, 0, board[0].length, board.length, board[0].length+expandSize);
 			updateLink(grid, 0, board[0].length-1, getWidth(), expandSize);
 
 		}
 		else if(dir == Direction.NORTH) {
 			copyGrid(board, grid, 0, expandSize);
-			for (int x = 0; x < board.length; x++) {
-				for (int y = 0; y < expandSize; y++) {
-					grid[x][y] = this.random(bf);
-				}
-			}
+			instanceSquare(grid, bf, 0, 0, board.length, expandSize);
 			updateLink(grid, 0, 0, getWidth(), expandSize+1);
 
 		}
 		else if(dir == Direction.WEST) {
 			copyGrid(board, grid, expandSize, 0);
-			for (int x = 0; x < expandSize; x++) {
-				for (int y = 0; y < board[x].length; y++) {
-					grid[x][y] = this.random(bf);
-				}
-			}
+			instanceSquare(grid, bf, 0, 0, expandSize, board[0].length);
 			updateLink(grid, 0, 0, expandSize+1, getHeight());
 		}
 		else if(dir == Direction.EAST) {
 			copyGrid(board, grid, 0, 0);
-			for (int x = board.length; x < board.length+expandSize; x++) {
-				for (int y = 0; y < board[0].length; y++) {
-					grid[x][y] = this.random(bf);
-				}
-			}
+			instanceSquare(grid, bf, board.length, 0, board.length+expandSize, board[0].length);
 			updateLink(grid, board.length-1, 0, expandSize, getHeight());
 		}
 		this.board = grid;
@@ -171,6 +155,14 @@ public class Board {
 					Square neighbour = grid[dirX][dirY];
 					square.link(neighbour, d);
 				}
+			}
+		}
+	}
+	
+	public void instanceSquare(Square[][] grid, BoardFactory bf, int _x, int _y, int dx, int dy) {
+		for (int x = _x; x < dx; x++) {
+			for (int y = _y; y < dy; y++) {
+				grid[x][y] = this.random(bf);
 			}
 		}
 	}
