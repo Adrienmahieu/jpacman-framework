@@ -97,76 +97,48 @@ public class Board {
 		Square[][] grid = null;
 		//GameFactory gf = new GameFactory(new PlayerFactory(Launcher.getSPRITE_STORE()));
 		BoardFactory bf = BoardFactory.instance;
+		int expandSize = 5;
+		grid = new Square[this.getWidth() + Math.abs(dir.getDeltaX()*expandSize)][this.getHeight()+ Math.abs(dir.getDeltaY()*expandSize)];
 		if(dir == Direction.SOUTH) {
-			grid = new Square[this.getWidth()][this.getHeight()+5];
+			copyGrid(board, grid, 0, 0);
 			for (int x = 0; x < board.length; x++) {
-				for (int y = 0; y < board[x].length; y++) {
-					grid[x][y] = board[x][y];
-				}
-			}
-			for (int x = 0; x < board.length; x++) {
-				for (int y = board[x].length; y < board[x].length+5; y++) {
+				for (int y = board[x].length; y < board[x].length+expandSize; y++) {
 					grid[x][y] = this.random(bf);
 				}
 			}
+			updateLink(grid, 0, board[0].length-1, getWidth(), expandSize);
 
 		}
 		else if(dir == Direction.NORTH) {
-			grid = new Square[this.getWidth()][this.getHeight()+5];
+			copyGrid(board, grid, 0, expandSize);
 			for (int x = 0; x < board.length; x++) {
-				for (int y = 0; y < board[x].length; y++) {
-					grid[x][y+5] = board[x][y];
-				}
-			}
-			for (int x = 0; x < board.length; x++) {
-				for (int y = 0; y < 5; y++) {
+				for (int y = 0; y < expandSize; y++) {
 					grid[x][y] = this.random(bf);
 				}
 			}
+			updateLink(grid, 0, 0, getWidth(), expandSize+1);
 
 		}
 		else if(dir == Direction.WEST) {
-			grid = new Square[this.getWidth()+5][this.getHeight()];
-			for (int x = 0; x < board.length; x++) {
-				for (int y = 0; y < board[x].length; y++) {
-					grid[x+5][y] = board[x][y];
-				}
-			}
-			for (int x = 0; x < 5; x++) {
+			copyGrid(board, grid, expandSize, 0);
+			for (int x = 0; x < expandSize; x++) {
 				for (int y = 0; y < board[x].length; y++) {
 					grid[x][y] = this.random(bf);
 				}
 			}
-
+			updateLink(grid, 0, 0, expandSize+1, getHeight());
 		}
 		else if(dir == Direction.EAST) {
-			grid = new Square[this.getWidth()+5][this.getHeight()];
-			for (int x = 0; x < board.length; x++) {
-				for (int y = 0; y < board[x].length; y++) {
-					grid[x][y] = board[x][y];
-				}
-			}
-			for (int x = board.length; x < board.length+5; x++) {
+			copyGrid(board, grid, 0, 0);
+			for (int x = board.length; x < board.length+expandSize; x++) {
 				for (int y = 0; y < board[0].length; y++) {
 					grid[x][y] = this.random(bf);
 				}
 			}
-
+			updateLink(grid, board.length-1, 0, expandSize, getHeight());
 		}
 		this.board = grid;
-		int width = grid.length;
-		int height = grid[0].length;
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				Square square = grid[x][y];
-				for (Direction d : Direction.values()) {
-					int dirX = (width + x + d.getDeltaX()) % width;
-					int dirY = (height + y + d.getDeltaY()) % height;
-					Square neighbour = grid[dirX][dirY];
-					square.link(neighbour, d);
-				}
-			}
-		}
+
 	}
 	
 	public Square random(BoardFactory bf) {
@@ -177,5 +149,29 @@ public class Board {
 		else if(i>0)
 			return bf.createGround();
 		return bf.createGround();
+	}
+	
+	public void copyGrid(Square[][] from, Square[][] to, int dx, int dy) {
+		for (int x = 0; x < from.length; x++) {
+			for (int y = 0; y < from[0].length; y++) {
+				to[x+dx][y+dy] = from[x][y];
+			}
+		}
+	}
+	
+	public void updateLink(Square[][] grid, int _x, int _y, int dx, int dy) {
+		int width = grid.length;
+		int height = grid[0].length;
+		for (int x = _x; x < _x+dx; x++) {
+			for (int y = _y; y < _y+dy; y++) {
+				Square square = grid[x][y];
+				for (Direction d : Direction.values()) {
+					int dirX = (width + x + d.getDeltaX()) % width;
+					int dirY = (height + y + d.getDeltaY()) % height;
+					Square neighbour = grid[dirX][dirY];
+					square.link(neighbour, d);
+				}
+			}
+		}
 	}
 }
