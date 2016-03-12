@@ -125,6 +125,11 @@ public class Board {
 
 	}
 	
+	/**
+	 * Generate a random Square.
+	 * @param bf
+	 * @return The generated Square.
+	 */
 	public Square random(BoardFactory bf) {
 		Random r = new Random();
 		int i = r.nextInt(5);
@@ -135,6 +140,13 @@ public class Board {
 		return bf.createGround();
 	}
 	
+	/**
+	 * Copy the grid.
+	 * @param from The origin grid.
+	 * @param to The destination grid.
+	 * @param dx The delta x to start copy.
+	 * @param dy The delta y to start copy.
+	 */
 	public void copyGrid(Square[][] from, Square[][] to, int dx, int dy) {
 		for (int x = 0; x < from.length; x++) {
 			for (int y = 0; y < from[0].length; y++) {
@@ -143,6 +155,14 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Update the link for Square instance.
+	 * @param grid The grid.
+	 * @param _x The origin x.
+	 * @param _y The origin y.
+	 * @param dx The number of cases to update on x.
+	 * @param dy The number of cases to update on y.
+	 */
 	public void updateLink(Square[][] grid, int _x, int _y, int dx, int dy) {
 		int width = grid.length;
 		int height = grid[0].length;
@@ -159,6 +179,15 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Instanciate Square in grid.
+	 * @param grid The grid.
+	 * @param bf
+	 * @param _x From position x.
+	 * @param _y From position y.
+	 * @param dx To position x. 
+	 * @param dy To position y.
+	 */
 	public void instanceSquare(Square[][] grid, BoardFactory bf, int _x, int _y, int dx, int dy) {
 		for (int x = _x; x < dx; x++) {
 			for (int y = _y; y < dy; y++) {
