@@ -1,9 +1,14 @@
 package nl.tudelft.jpacman.board;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 import nl.tudelft.jpacman.Launcher;
+import nl.tudelft.jpacman.PacmanConfigurationException;
 import nl.tudelft.jpacman.game.GameFactory;
+import nl.tudelft.jpacman.level.Level;
+import nl.tudelft.jpacman.level.MapParser;
 import nl.tudelft.jpacman.level.PlayerFactory;
 
 /**
@@ -17,6 +22,11 @@ public class Board {
 	 * The grid of squares with board[x][y] being the square at column x, row y.
 	 */
 	private Square[][] board;
+	
+	private int sectionSizeX;
+	private int sectionSizeY;
+	
+	private Random rand = new Random();
 
 	/**
 	 * Creates a new board.
@@ -28,6 +38,8 @@ public class Board {
 	Board(Square[][] grid) {
 		assert grid != null;
 		this.board = grid;
+		sectionSizeX = grid.length;
+		sectionSizeY = grid[0].length;
 		assert invariant() : "Initial grid cannot contain null squares";
 	}
 	
@@ -98,6 +110,10 @@ public class Board {
 		//GameFactory gf = new GameFactory(new PlayerFactory(Launcher.getSPRITE_STORE()));
 		BoardFactory bf = BoardFactory.instance;
 		int expandSize = 5;
+		if(dir==Direction.EAST || dir==Direction.WEST)
+			expandSize = sectionSizeX;
+		else
+			expandSize = sectionSizeY;
 		grid = new Square[this.getWidth() + Math.abs(dir.getDeltaX()*expandSize)][this.getHeight()+ Math.abs(dir.getDeltaY()*expandSize)];
 		if(dir == Direction.SOUTH) {
 			copyGrid(board, grid, 0, 0);
@@ -189,10 +205,44 @@ public class Board {
 	 * @param dy To position y.
 	 */
 	public void instanceSquare(Square[][] grid, BoardFactory bf, int _x, int _y, int dx, int dy) {
-		for (int x = _x; x < dx; x++) {
-			for (int y = _y; y < dy; y++) {
-				grid[x][y] = this.random(bf);
+		int nbx = (dx-_x)/sectionSizeX;
+		int nby = (dy-_y)/sectionSizeY;
+		//Level l = makeLevel("/board.txt");
+		//Square[][] newMap = l.getBoard().board;
+		
+//		for (int x = _x; x < dx; x++) {
+//			for (int y = _y; y < dy; y++) {
+//				//grid[x][y] = this.random(bf);
+//				grid[x][y] = newMap[(x-_x)%22][(y-_y)%20];
+//			}
+//		}
+		for(int nx=0; nx<nbx; nx++) {
+			for(int ny=0; ny<nby; ny++) {
+				Level l = makeLevel(this.randomBoard());
+				Square[][] newMap = l.getBoard().board;
+				for(int x=0; x<newMap.length; x++) {
+					for(int y=0; y<newMap[0].length; y++) {
+						grid[_x+(nx*sectionSizeX)+x][_y+(ny*sectionSizeY)+y] = newMap[x][y];
+					}
+				}
 			}
 		}
+	}
+	
+	public Level makeLevel(String ressource) {
+		MapParser parser = MapParser.getInstance();
+		try (InputStream boardStream = Launcher.class
+				.getResourceAsStream(ressource)) {
+			return parser.parseMap(boardStream);
+		} catch (IOException e) {
+			throw new PacmanConfigurationException("Unable to create level.", e);
+		}
+	}
+	
+	public String randomBoard() {
+		String s = "/board";
+		s += (1+rand.nextInt(2));
+		s += ".txt";
+		return s;
 	}
 }

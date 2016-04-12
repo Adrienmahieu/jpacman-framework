@@ -88,11 +88,13 @@ class BoardPanel extends JPanel {
 	 */
 	private void render(Board board, Graphics g, Dimension window) {
 		if(cellW == 0 && cellH == 0) {
-			cellW = window.width / board.getWidth();
-			cellH = window.height / board.getHeight();
+			
 			iwidth = board.getWidth();
 			iheight = board.getHeight();
 		}
+		
+		cellW = window.width / iwidth;
+		cellH = window.height / iheight;
 
 		g.setColor(BACKGROUND_COLOR);
 		g.fillRect(0, 0, window.width, window.height);
@@ -119,7 +121,7 @@ class BoardPanel extends JPanel {
 				render(square, g, cellX, cellY, cellW, cellH);
 			}
 		}
-		
+
 		if(py > board.getHeight()-5) {
 			board.expand(Direction.SOUTH);
 		}

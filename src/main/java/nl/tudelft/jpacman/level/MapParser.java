@@ -29,6 +29,8 @@ public class MapParser {
 	 * The factory that creates the squares and board.
 	 */
 	private final BoardFactory boardCreator;
+	
+	private static MapParser instance;
 
 	/**
 	 * Creates a new map parser.
@@ -41,6 +43,7 @@ public class MapParser {
 	public MapParser(LevelFactory levelFactory, BoardFactory boardFactory) {
 		this.levelCreator = levelFactory;
 		this.boardCreator = boardFactory;
+		MapParser.instance = this;
 	}
 
 	/**
@@ -199,5 +202,9 @@ public class MapParser {
 			}
 			return parseMap(lines);
 		}
+	}
+	
+	public static MapParser getInstance() {
+		return MapParser.instance;
 	}
 }

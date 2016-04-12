@@ -66,6 +66,8 @@ public class Launcher {
 			throw new PacmanConfigurationException("Unable to create level.", e);
 		}
 	}
+	
+
 
 	/**
 	 * @return A new map parser object using the factories from
