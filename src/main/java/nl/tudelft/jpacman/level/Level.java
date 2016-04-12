@@ -74,6 +74,8 @@ public class Level {
 	 * The objects observing this level.
 	 */
 	private final List<LevelObserver> observers;
+	
+	private static Level instance;
 
 	/**
 	 * Creates a new level for the board.
@@ -104,6 +106,8 @@ public class Level {
 		this.players = new ArrayList<>();
 		this.collisions = collisionMap;
 		this.observers = new ArrayList<>();
+		if(Level.instance == null)
+			Level.instance = this;
 	}
 
 	/**
@@ -366,5 +370,13 @@ public class Level {
 		 * this event is received.
 		 */
 		void levelLost();
+	}
+
+	public Map<NPC, ScheduledExecutorService> getNpcs() {
+		return npcs;
+	}
+
+	public static Level getInstance() {
+		return instance;
 	}
 }

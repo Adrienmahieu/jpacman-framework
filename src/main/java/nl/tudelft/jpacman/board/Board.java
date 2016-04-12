@@ -219,6 +219,8 @@ public class Board {
 		for(int nx=0; nx<nbx; nx++) {
 			for(int ny=0; ny<nby; ny++) {
 				Level l = makeLevel(this.randomBoard());
+				l.start();
+				Level.getInstance().getNpcs().putAll(l.getNpcs());
 				Square[][] newMap = l.getBoard().board;
 				for(int x=0; x<newMap.length; x++) {
 					for(int y=0; y<newMap[0].length; y++) {
