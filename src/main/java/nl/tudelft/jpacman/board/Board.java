@@ -220,7 +220,10 @@ public class Board {
 			for(int ny=0; ny<nby; ny++) {
 				Level l = makeLevel(this.randomBoard());
 				l.start();
+				//Level.getInstance().stopNPCs();
 				Level.getInstance().getNpcs().putAll(l.getNpcs());
+				//Level.getInstance().startNPCs();
+				System.out.println("Nb Ghosts : " + Level.getInstance().getNpcs().size());
 				Square[][] newMap = l.getBoard().board;
 				for(int x=0; x<newMap.length; x++) {
 					for(int y=0; y<newMap[0].length; y++) {
