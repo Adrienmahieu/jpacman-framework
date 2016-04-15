@@ -64,11 +64,12 @@ public class Inky extends Ghost {
 	 */
 	public Inky(Map<Direction, Sprite> spriteMap) {
 		super(spriteMap);
+		this.move_interval = MOVE_INTERVAL;
 	}
 
 	@Override
 	public long getInterval() {
-		return MOVE_INTERVAL + new Random().nextInt(INTERVAL_VARIATION);
+		return this.move_interval + new Random().nextInt(INTERVAL_VARIATION);
 	}
 
 	/**

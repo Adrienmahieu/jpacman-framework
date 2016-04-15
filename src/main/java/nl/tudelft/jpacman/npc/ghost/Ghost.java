@@ -22,6 +22,8 @@ public abstract class Ghost extends NPC {
 	 */
 	private Map<Direction, Sprite> sprites;
 
+	protected int move_interval;
+
 	/**
 	 * Creates a new ghost.
 	 * 

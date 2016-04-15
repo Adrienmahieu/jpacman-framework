@@ -59,13 +59,14 @@ public class Blinky extends Ghost {
 	 */
 	public Blinky(Map<Direction, Sprite> spriteMap) {
 		super(spriteMap);
+		this.move_interval = MOVE_INTERVAL;
 	}
 
 	@Override
 	public long getInterval() {
 		// TODO Blinky should speed up when there are a few pellets left, but he
 		// has no way to find out how many there are.
-		return MOVE_INTERVAL + new Random().nextInt(INTERVAL_VARIATION);
+		return this.move_interval + new Random().nextInt(INTERVAL_VARIATION);
 	}
 
 	/**
