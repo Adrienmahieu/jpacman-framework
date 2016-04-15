@@ -2,6 +2,7 @@ package nl.tudelft.jpacman.board;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Random;
 
 import nl.tudelft.jpacman.Launcher;
@@ -220,10 +221,12 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Select a random map from map directory.
+	 * @return A map name.
+	 */
 	public String randomBoard() {
-		String s = "/board";
-		s += (1+rand.nextInt(2));
-		s += ".txt";
-		return s;
+		List<String> maps = Launcher.getInstance().getMaps();
+		return maps.get(rand.nextInt(maps.size()));
 	}
 }

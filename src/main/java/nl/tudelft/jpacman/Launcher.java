@@ -1,9 +1,13 @@
 package nl.tudelft.jpacman;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Direction;
@@ -31,11 +35,13 @@ public class Launcher {
 	private static Launcher instance;
 	
 	private MapParser mapParser;
+	private List<String> maps = new ArrayList<String>();
 
 	private PacManUI pacManUI;
 	private Game game;
 	
 	public Launcher() {
+		this.addMaps("src/main/resources");
 		if(instance==null)
 			Launcher.instance = this;
 	}
@@ -75,6 +81,24 @@ public class Launcher {
 		} catch (IOException e) {
 			throw new PacmanConfigurationException("Unable to create level.", e);
 		}
+	}
+	
+	/**
+	 * Add all the maps in the list.
+	 * @param path The path to the maps directory.
+	 */
+	public void addMaps(String path) {
+		String[] files = new File(path).list(); 
+		String filtre = "board(\\w*).txt";
+		Pattern p = Pattern.compile(filtre); 
+		for (int i=0; i<files.length;i++) 
+		{ 
+			Matcher m = p.matcher(files[i]); 
+			if (m.matches() && !files[i].equals("board.txt")) 
+			{ 
+				maps.add("/" + files[i]); 
+			} 
+		} 
 	}
 	
 
@@ -216,5 +240,9 @@ public class Launcher {
 
 	public static Launcher getInstance() {
 		return instance;
+	}
+
+	public List<String> getMaps() {
+		return maps;
 	}
 }
