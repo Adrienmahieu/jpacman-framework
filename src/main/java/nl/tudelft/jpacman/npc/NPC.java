@@ -17,6 +17,8 @@ public abstract class NPC extends Unit {
 	 */
 	public abstract long getInterval();
 
+	public abstract void speedUp(int percent);
+
 	/**
 	 * Calculates the next move for this unit and returns the direction to move
 	 * in.

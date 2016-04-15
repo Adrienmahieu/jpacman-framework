@@ -69,6 +69,11 @@ public class Blinky extends Ghost {
 		return this.move_interval + new Random().nextInt(INTERVAL_VARIATION);
 	}
 
+	@Override
+	public void speedUp(int percent) {
+		this.move_interval += MOVE_INTERVAL * percent/100.0;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
