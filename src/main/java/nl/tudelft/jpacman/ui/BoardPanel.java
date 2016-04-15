@@ -122,16 +122,17 @@ class BoardPanel extends JPanel {
 			}
 		}
 
-		if(py > board.getHeight()-5) {
+        int limit = 15;
+		if(py > board.getHeight()-limit) {
 			board.expand(Direction.SOUTH);
 		}
-		if(py < 5) {
+		if(py < limit) {
 			board.expand(Direction.NORTH);
 		}
-		if(px < 5) {
+		if(px < limit) {
 			board.expand(Direction.WEST);
 		}
-		if(px > board.getWidth()-5) {
+		if(px > board.getWidth()-limit) {
 			board.expand(Direction.EAST);
 		}
 		

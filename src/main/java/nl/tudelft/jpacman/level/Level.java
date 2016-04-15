@@ -254,7 +254,8 @@ public class Level {
 	 * @param l A level
 	 */
 	public void addNPCs(Level l) {
-		l.start();
+		if(this.isInProgress())
+			l.start();
 		this.getNpcs().putAll(l.getNpcs());
 	}
 
