@@ -257,6 +257,9 @@ public class Level {
 		if(this.isInProgress())
 			l.start();
 		this.getNpcs().putAll(l.getNpcs());
+        for (NPC npc : npcs.keySet()) {
+            npc.speedUp(2);
+        }
 	}
 
 	/**

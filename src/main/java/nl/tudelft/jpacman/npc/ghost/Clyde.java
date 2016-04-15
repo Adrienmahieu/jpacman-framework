@@ -87,7 +87,7 @@ public class Clyde extends Ghost {
 
 	@Override
 	public void speedUp(int percent) {
-		this.move_interval += MOVE_INTERVAL * percent/100.0;
+		this.move_interval -= MOVE_INTERVAL * percent/100.0;
 	}
 
 	/**
