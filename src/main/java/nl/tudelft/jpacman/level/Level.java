@@ -22,6 +22,8 @@ import nl.tudelft.jpacman.npc.NPC;
  * @author Jeroen Roosen 
  */
 public class Level {
+	
+	private static final int GHOST_LIMIT = 10;
 
 	/**
 	 * The board of this level.
@@ -257,9 +259,43 @@ public class Level {
 		if(this.isInProgress())
 			l.start();
 		this.getNpcs().putAll(l.getNpcs());
+		List<NPC> toRemove = new ArrayList<NPC>();
         for (NPC npc : npcs.keySet()) {
             npc.speedUp(2);
+            if(npcs.size() > GHOST_LIMIT)
+            	toRemove.add(npc);
         }
+        remove(toRemove);
+	}
+	
+	public void remove(List<NPC> npcs) {
+		while(npcs.size() > GHOST_LIMIT) {
+			int dmax = 0;
+			NPC remove = null;
+			for(NPC npc : npcs) {
+				int distance = distance(this.players.get(0), npc);
+				if(distance > dmax) {
+					remove = npc;
+					dmax = distance;
+				}
+			}
+			npcs.remove(remove);
+			this.remove(remove);
+		}
+	}
+	
+	public void remove(NPC npc) {
+		ScheduledExecutorService e = npcs.remove(npc);
+		if(e != null)
+			e.shutdown();
+		npcs.remove(npc);
+		npc.leaveSquare();
+	}
+	
+	public int distance(Player player, NPC npc) {
+		Square sp = player.getSquare();
+		Square snpc = npc.getSquare();
+		return Math.abs(sp.getX() - snpc.getX()) + Math.abs(sp.getY() - snpc.getY());
 	}
 
 	/**
