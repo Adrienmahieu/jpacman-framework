@@ -248,6 +248,15 @@ public class Level {
 			e.getValue().shutdownNow();
 		}
 	}
+	
+	/**
+	 * Start the NPCs from l and add them to the current game.
+	 * @param l A level
+	 */
+	public void addNPCs(Level l) {
+		l.start();
+		this.getNpcs().putAll(l.getNpcs());
+	}
 
 	/**
 	 * Returns whether this level is in progress, i.e. whether moves can be made

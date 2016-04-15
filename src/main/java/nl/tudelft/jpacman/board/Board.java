@@ -107,8 +107,6 @@ public class Board {
 	
 	public void expand(Direction dir) {
 		Square[][] grid = null;
-		//GameFactory gf = new GameFactory(new PlayerFactory(Launcher.getSPRITE_STORE()));
-		BoardFactory bf = BoardFactory.instance;
 		int expandSize = 5;
 		if(dir==Direction.EAST || dir==Direction.WEST)
 			expandSize = sectionSizeX;
@@ -117,24 +115,24 @@ public class Board {
 		grid = new Square[this.getWidth() + Math.abs(dir.getDeltaX()*expandSize)][this.getHeight()+ Math.abs(dir.getDeltaY()*expandSize)];
 		if(dir == Direction.SOUTH) {
 			copyGrid(board, grid, 0, 0);
-			instanceSquare(grid, bf, 0, board[0].length, board.length, board[0].length+expandSize);
+			instanceSquare(grid, 0, board[0].length, board.length, board[0].length+expandSize);
 			updateLink(grid, 0, board[0].length-1, getWidth(), expandSize);
 
 		}
 		else if(dir == Direction.NORTH) {
 			copyGrid(board, grid, 0, expandSize);
-			instanceSquare(grid, bf, 0, 0, board.length, expandSize);
+			instanceSquare(grid, 0, 0, board.length, expandSize);
 			updateLink(grid, 0, 0, getWidth(), expandSize+1);
 
 		}
 		else if(dir == Direction.WEST) {
 			copyGrid(board, grid, expandSize, 0);
-			instanceSquare(grid, bf, 0, 0, expandSize, board[0].length);
+			instanceSquare(grid, 0, 0, expandSize, board[0].length);
 			updateLink(grid, 0, 0, expandSize+1, getHeight());
 		}
 		else if(dir == Direction.EAST) {
 			copyGrid(board, grid, 0, 0);
-			instanceSquare(grid, bf, board.length, 0, board.length+expandSize, board[0].length);
+			instanceSquare(grid, board.length, 0, board.length+expandSize, board[0].length);
 			updateLink(grid, board.length-1, 0, expandSize, getHeight());
 		}
 		this.board = grid;
@@ -204,25 +202,13 @@ public class Board {
 	 * @param dx To position x. 
 	 * @param dy To position y.
 	 */
-	public void instanceSquare(Square[][] grid, BoardFactory bf, int _x, int _y, int dx, int dy) {
+	public void instanceSquare(Square[][] grid, int _x, int _y, int dx, int dy) {
 		int nbx = (dx-_x)/sectionSizeX;
 		int nby = (dy-_y)/sectionSizeY;
-		//Level l = makeLevel("/board.txt");
-		//Square[][] newMap = l.getBoard().board;
-		
-//		for (int x = _x; x < dx; x++) {
-//			for (int y = _y; y < dy; y++) {
-//				//grid[x][y] = this.random(bf);
-//				grid[x][y] = newMap[(x-_x)%22][(y-_y)%20];
-//			}
-//		}
 		for(int nx=0; nx<nbx; nx++) {
 			for(int ny=0; ny<nby; ny++) {
-				Level l = makeLevel(this.randomBoard());
-				l.start();
-				//Level.getInstance().stopNPCs();
-				Level.getInstance().getNpcs().putAll(l.getNpcs());
-				//Level.getInstance().startNPCs();
+				Level l = Launcher.getInstance().makeLevel(this.randomBoard());
+				Level.getInstance().addNPCs(l);
 				System.out.println("Nb Ghosts : " + Level.getInstance().getNpcs().size());
 				Square[][] newMap = l.getBoard().board;
 				for(int x=0; x<newMap.length; x++) {
@@ -231,16 +217,6 @@ public class Board {
 					}
 				}
 			}
-		}
-	}
-	
-	public Level makeLevel(String ressource) {
-		MapParser parser = MapParser.getInstance();
-		try (InputStream boardStream = Launcher.class
-				.getResourceAsStream(ressource)) {
-			return parser.parseMap(boardStream);
-		} catch (IOException e) {
-			throw new PacmanConfigurationException("Unable to create level.", e);
 		}
 	}
 	

@@ -28,9 +28,17 @@ import nl.tudelft.jpacman.ui.PacManUiBuilder;
 public class Launcher {
 
 	private static final PacManSprites SPRITE_STORE = new PacManSprites();
+	private static Launcher instance;
+	
+	private MapParser mapParser;
 
 	private PacManUI pacManUI;
 	private Game game;
+	
+	public Launcher() {
+		if(instance==null)
+			Launcher.instance = this;
+	}
 
 	/**
 	 * @return The game object this launcher will start when {@link #launch()}
@@ -47,7 +55,7 @@ public class Launcher {
 	 */
 	public Game makeGame() {
 		GameFactory gf = getGameFactory();
-		Level level = makeLevel();
+		Level level = makeLevel("/board.txt");
 		return gf.createSinglePlayerGame(level);
 	}
 
@@ -57,10 +65,12 @@ public class Launcher {
 	 * 
 	 * @return A new level.
 	 */
-	public Level makeLevel() {
-		MapParser parser = getMapParser();
+	public Level makeLevel(String file) {
+		if(mapParser == null)
+			mapParser = getMapParser();
+		MapParser parser = mapParser;
 		try (InputStream boardStream = Launcher.class
-				.getResourceAsStream("/board.txt")) {
+				.getResourceAsStream(file)) {
 			return parser.parseMap(boardStream);
 		} catch (IOException e) {
 			throw new PacmanConfigurationException("Unable to create level.", e);
@@ -202,5 +212,9 @@ public class Launcher {
 	
 	public static final PacManSprites getSPRITE_STORE() {
 		return SPRITE_STORE;
+	}
+
+	public static Launcher getInstance() {
+		return instance;
 	}
 }
