@@ -26,6 +26,8 @@ public abstract class Square {
 	 * The collection of squares adjacent to this square.
 	 */
 	private final Map<Direction, Square> neighbours;
+	
+	private int x, y;
 
 	/**
 	 * Creates a new, empty square.
@@ -129,5 +131,21 @@ public abstract class Square {
 	 * @return The sprite of this square.
 	 */
 	public abstract Sprite getSprite();
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
 
 }

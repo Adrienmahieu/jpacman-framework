@@ -101,17 +101,9 @@ class BoardPanel extends JPanel {
 		
 		Player player = game.getPlayers().get(0);
 		Square occupy = player.getSquare();
-		int px=0, py=0;
-		for (int y = 0; y < board.getHeight(); y++) {
-			for (int x = 0; x < board.getWidth(); x++) {
-				if(occupy == board.squareAt(x, y)) {
-					dx = iwidth/2 - x;
-					dy = iheight/2 - y;
-					px = x;
-					py = y;
-				}
-			}
-		}
+		int px=occupy.getX(), py=occupy.getY();
+		dx = iwidth/2 - px;
+		dy = iheight/2 - py;
 
 		for (int y = 0; y < board.getHeight(); y++) {
 			for (int x = 0; x < board.getWidth(); x++) {

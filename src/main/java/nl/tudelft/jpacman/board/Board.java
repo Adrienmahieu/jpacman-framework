@@ -136,8 +136,22 @@ public class Board {
 			instanceSquare(grid, board.length, 0, board.length+expandSize, board[0].length);
 			updateLink(grid, board.length-1, 0, expandSize, getHeight());
 		}
+		updatePosition(grid);
 		this.board = grid;
 
+	}
+	
+	public void updatePosition() {
+		updatePosition(this.board);
+	}
+	
+	public void updatePosition(Square[][] squares) {
+		for(int i=0; i < squares.length; i++) {
+			for(int j=0; j < squares[0].length; j++) {
+				squares[i][j].setX(i);
+				squares[i][j].setY(j);
+			}
+		}
 	}
 	
 	/**

@@ -62,6 +62,7 @@ public class Launcher {
 	public Game makeGame() {
 		GameFactory gf = getGameFactory();
 		Level level = makeLevel("/board.txt");
+		level.getBoard().updatePosition();
 		return gf.createSinglePlayerGame(level);
 	}
 
