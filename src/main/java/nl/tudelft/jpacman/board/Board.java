@@ -1,16 +1,10 @@
 package nl.tudelft.jpacman.board;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 
 import nl.tudelft.jpacman.Launcher;
-import nl.tudelft.jpacman.PacmanConfigurationException;
-import nl.tudelft.jpacman.game.GameFactory;
 import nl.tudelft.jpacman.level.Level;
-import nl.tudelft.jpacman.level.MapParser;
-import nl.tudelft.jpacman.level.PlayerFactory;
 
 /**
  * A top-down view of a matrix of {@link Square}s.
