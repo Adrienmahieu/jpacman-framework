@@ -14,7 +14,7 @@ import org.junit.Test;
 public class BoardTest {
 
 	private Board board;
-	
+
 	private Square x0y0 = mock(Square.class);
 	private Square x0y1 = mock(Square.class);
 	private Square x0y2 = mock(Square.class);

@@ -267,9 +267,13 @@ public class Level {
         }
         remove(toRemove);
 	}
-	
+
+	/**
+	 * Remove farest NPCs from list.
+	 * @param npcs The list of npcs.
+     */
 	public void remove(List<NPC> npcs) {
-		while(npcs.size() > GHOST_LIMIT) {
+		while(npcs.size() > GHOST_LIMIT && !npcs.isEmpty()) {
 			int dmax = 0;
 			NPC remove = null;
 			for(NPC npc : npcs) {
@@ -283,7 +287,11 @@ public class Level {
 			this.remove(remove);
 		}
 	}
-	
+
+	/**
+	 * Remove the npc from the game.
+	 * @param npc The NPC to remove.
+     */
 	public void remove(NPC npc) {
 		ScheduledExecutorService e = npcs.remove(npc);
 		if(e != null)
@@ -291,7 +299,13 @@ public class Level {
 		npcs.remove(npc);
 		npc.leaveSquare();
 	}
-	
+
+	/**
+	 * Compute the distance between player and NPC.
+	 * @param player The player.
+	 * @param npc The npc.
+     * @return The distance.
+     */
 	public int distance(Player player, NPC npc) {
 		Square sp = player.getSquare();
 		Square snpc = npc.getSquare();
@@ -421,10 +435,18 @@ public class Level {
 		void levelLost();
 	}
 
+    /**
+     * Return the Map of NPCs and ScheduledService.
+     * @return The Map of NPCs and ScheduledService.
+     */
 	public Map<NPC, ScheduledExecutorService> getNpcs() {
 		return npcs;
 	}
 
+    /**
+     * Return the Level instance of the game.
+     * @return The level of the game.
+     */
 	public static Level getInstance() {
 		return instance;
 	}

@@ -134,11 +134,18 @@ public class Board {
 		this.board = grid;
 
 	}
-	
+
+	/**
+	 * Update the position x y for all squares of board.
+	 */
 	public void updatePosition() {
 		updatePosition(this.board);
 	}
-	
+
+	/**
+	 * Update the position x y for all squares.
+	 * @param squares A table of squares.
+     */
 	public void updatePosition(Square[][] squares) {
 		for(int i=0; i < squares.length; i++) {
 			for(int j=0; j < squares[0].length; j++) {
@@ -205,7 +212,6 @@ public class Board {
 	/**
 	 * Instanciate Square in grid.
 	 * @param grid The grid.
-	 * @param bf
 	 * @param _x From position x.
 	 * @param _y From position y.
 	 * @param dx To position x. 
@@ -217,14 +223,13 @@ public class Board {
 		for(int nx=0; nx<nbx; nx++) {
 			for(int ny=0; ny<nby; ny++) {
 				Level l = Launcher.getInstance().makeLevel(this.randomBoard());
-				Level.getInstance().addNPCs(l);
-				System.out.println("Nb Ghosts : " + Level.getInstance().getNpcs().size());
 				Square[][] newMap = l.getBoard().board;
 				for(int x=0; x<newMap.length; x++) {
 					for(int y=0; y<newMap[0].length; y++) {
 						grid[_x+(nx*sectionSizeX)+x][_y+(ny*sectionSizeY)+y] = newMap[x][y];
 					}
 				}
+                Level.getInstance().addNPCs(l);
 			}
 		}
 	}
@@ -237,4 +242,12 @@ public class Board {
 		List<String> maps = Launcher.getInstance().getMaps();
 		return maps.get(rand.nextInt(maps.size()));
 	}
+
+    public int getSectionSizeX() {
+        return sectionSizeX;
+    }
+
+    public int getSectionSizeY() {
+        return sectionSizeY;
+    }
 }

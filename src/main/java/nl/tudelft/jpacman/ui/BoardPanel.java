@@ -44,8 +44,6 @@ class BoardPanel extends JPanel {
 	
 	private int dx;
 	private int dy;
-	private int iwidth;
-	private int iheight;
 	
 	private int cellW = 0, cellH = 0;
 
@@ -62,8 +60,8 @@ class BoardPanel extends JPanel {
 
 		Board board = game.getLevel().getBoard();
 
-		int w = board.getWidth() * SQUARE_SIZE;
-		int h = board.getHeight() * SQUARE_SIZE;
+		int w = board.getSectionSizeX() * SQUARE_SIZE;
+		int h = board.getSectionSizeY() * SQUARE_SIZE;
 
 		Dimension size = new Dimension(w, h);
 		setMinimumSize(size);
@@ -87,11 +85,8 @@ class BoardPanel extends JPanel {
 	 *            The dimensions to scale the rendered board to.
 	 */
 	private void render(Board board, Graphics g, Dimension window) {
-		if(cellW == 0 && cellH == 0) {
-			
-			iwidth = board.getWidth();
-			iheight = board.getHeight();
-		}
+		int iwidth = board.getSectionSizeX();
+		int iheight = board.getSectionSizeY();
 		
 		cellW = window.width / iwidth;
 		cellH = window.height / iheight;
@@ -113,21 +108,6 @@ class BoardPanel extends JPanel {
 				render(square, g, cellX, cellY, cellW, cellH);
 			}
 		}
-
-        int limit = 15;
-		if(py > board.getHeight()-limit) {
-			board.expand(Direction.SOUTH);
-		}
-		if(py < limit) {
-			board.expand(Direction.NORTH);
-		}
-		if(px < limit) {
-			board.expand(Direction.WEST);
-		}
-		if(px > board.getWidth()-limit) {
-			board.expand(Direction.EAST);
-		}
-		
 	}
 
 	/**

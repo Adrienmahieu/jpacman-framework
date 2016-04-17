@@ -2,6 +2,7 @@ package nl.tudelft.jpacman.game;
 
 import java.util.List;
 
+import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.level.Level.LevelObserver;
@@ -90,6 +91,26 @@ public abstract class Game implements LevelObserver {
 		if (isInProgress()) {
 			// execute player move.
 			getLevel().move(player, direction);
+			expand(player);
+		}
+	}
+
+	public void expand(Player player) {
+		int limit = 15;
+		int px = player.getSquare().getX();
+		int py = player.getSquare().getY();
+		Board board = this.getLevel().getBoard();
+		if(py > board.getHeight()-limit) {
+			board.expand(Direction.SOUTH);
+		}
+		if(py < limit) {
+			board.expand(Direction.NORTH);
+		}
+		if(px < limit) {
+			board.expand(Direction.WEST);
+		}
+		if(px > board.getWidth()-limit) {
+			board.expand(Direction.EAST);
 		}
 	}
 	

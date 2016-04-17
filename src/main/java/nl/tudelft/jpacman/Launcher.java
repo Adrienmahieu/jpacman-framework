@@ -55,7 +55,7 @@ public class Launcher {
 	}
 
 	/**
-	 * Creates a new game using the level from {@link #makeLevel()}.
+	 * Creates a new game using the level from {@link #makeLevel(String)}.
 	 * 
 	 * @return a new Game.
 	 */
@@ -212,6 +212,7 @@ public class Launcher {
 		game = makeGame();
 		PacManUiBuilder builder = new PacManUiBuilder().withDefaultButtons();
 		addSinglePlayerKeys(builder, game);
+        game.expand(this.getSinglePlayer(game));
 		pacManUI = builder.build(game);
 		pacManUI.start();
 	}
