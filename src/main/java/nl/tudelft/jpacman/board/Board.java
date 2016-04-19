@@ -1,10 +1,10 @@
 package nl.tudelft.jpacman.board;
 
-import java.util.List;
-import java.util.Random;
-
 import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.level.Level;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * A top-down view of a matrix of {@link Square}s.
@@ -131,6 +131,10 @@ public class Board {
 			updateLink(grid, board.length-1, 0, expandSize, getHeight());
 		}
 		updatePosition(grid);
+		updateLink(grid, 0, 0, grid.length, 1);
+		updateLink(grid, 0, 0, 1, grid[0].length);
+		updateLink(grid, grid.length-1, 0, 1, grid[0].length);
+		updateLink(grid, 0, grid[0].length-1, grid.length, 1);
 		this.board = grid;
 
 	}
@@ -250,4 +254,8 @@ public class Board {
     public int getSectionSizeY() {
         return sectionSizeY;
     }
+
+	public Square[][] getBoard() {
+		return board;
+	}
 }
