@@ -76,10 +76,8 @@ public class BoardExpandTest {
 
         //board.updateLink(board.getBoard(), 0,0, board.getWidth(), board.getHeight());
 
-
         for(int i=0; i<board.getWidth(); i++) {
             for(int j=0; j<board.getHeight(); j++) {
-                System.out.println(i + " " + j);
                 Square s = board.squareAt(i,j);
                 for(Direction d : Direction.values()) {
                     assertEquals(s.getSquareAt(d), board.squareAt((i+d.getDeltaX()+board.getWidth()) % board.getWidth(),
