@@ -132,7 +132,6 @@ public class LevelFactory {
 
         @Override
         public void speedUp(int percent) {
-            return;
         }
 
         @Override

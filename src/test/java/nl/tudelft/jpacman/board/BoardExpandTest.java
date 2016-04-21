@@ -40,7 +40,7 @@ public class BoardExpandTest {
      */
     @SuppressWarnings("methodlength")
     @Test
-    public void ExpandTest() throws InterruptedException {
+    public void expandTest() throws InterruptedException {
         Game game = launcher.getGame();
         Board board = game.getLevel().getBoard();
         Player player = game.getPlayers().get(0);
