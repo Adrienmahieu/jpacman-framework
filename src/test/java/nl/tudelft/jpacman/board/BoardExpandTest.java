@@ -11,31 +11,31 @@ import static org.junit.Assert.*;
 
 
 public class BoardExpandTest {
-	
-	private Launcher launcher;
-	
-	/**
-	 * Launch the user interface.
-	 */
-	@Before
-	public void setUpPacman() {
-		launcher = new Launcher();
-		launcher.launch();
-	}
-	
-	/**
-	 * Quit the user interface when we're done.
-	 */
-	@After
-	public void tearDown() {
-		launcher.dispose();
-	}
+
+    private Launcher launcher;
+
+    /**
+     * Launch the user interface.
+     */
+    @Before
+    public void setUpPacman() {
+        launcher = new Launcher();
+        launcher.launch();
+    }
+
+    /**
+     * Quit the user interface when we're done.
+     */
+    @After
+    public void tearDown() {
+        launcher.dispose();
+    }
 
     /**
      * Launch the game, and imitate what would happen in a typical game.
      * The test is only a smoke test, and not a focused small test.
      * Therefore it is OK that the method is a bit too long.
-     * 
+     *
      * @throws InterruptedException Since we're sleeping in this test.
      */
     @SuppressWarnings("methodlength")
@@ -44,7 +44,7 @@ public class BoardExpandTest {
         Game game = launcher.getGame();
         Board board = game.getLevel().getBoard();
         Player player = game.getPlayers().get(0);
- 
+
         // start cleanly.
         assertFalse(game.isInProgress());
         game.start();
@@ -76,16 +76,16 @@ public class BoardExpandTest {
 
         //board.updateLink(board.getBoard(), 0,0, board.getWidth(), board.getHeight());
 
-        for(int i=0; i<board.getWidth(); i++) {
-            for(int j=0; j<board.getHeight(); j++) {
-                Square s = board.squareAt(i,j);
-                for(Direction d : Direction.values()) {
-                    assertEquals(s.getSquareAt(d), board.squareAt((i+d.getDeltaX()+board.getWidth()) % board.getWidth(),
-                            (j+d.getDeltaY()+board.getHeight()) % board.getHeight()));
+        for (int i = 0; i < board.getWidth(); i++) {
+            for (int j = 0; j < board.getHeight(); j++) {
+                Square s = board.squareAt(i, j);
+                for (Direction d : Direction.values()) {
+                    assertEquals(s.getSquareAt(d), board.squareAt((i + d.getDeltaX() + board.getWidth()) % board.getWidth(),
+                            (j + d.getDeltaY() + board.getHeight()) % board.getHeight()));
                 }
             }
         }
 
 
-     }
+    }
 }

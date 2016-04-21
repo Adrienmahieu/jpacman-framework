@@ -1,5 +1,16 @@
 package nl.tudelft.jpacman;
 
+import nl.tudelft.jpacman.board.BoardFactory;
+import nl.tudelft.jpacman.board.Direction;
+import nl.tudelft.jpacman.game.Game;
+import nl.tudelft.jpacman.game.GameFactory;
+import nl.tudelft.jpacman.level.*;
+import nl.tudelft.jpacman.npc.ghost.GhostFactory;
+import nl.tudelft.jpacman.sprite.PacManSprites;
+import nl.tudelft.jpacman.ui.Action;
+import nl.tudelft.jpacman.ui.PacManUI;
+import nl.tudelft.jpacman.ui.PacManUiBuilder;
+
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -9,242 +20,220 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.board.Direction;
-import nl.tudelft.jpacman.game.Game;
-import nl.tudelft.jpacman.game.GameFactory;
-import nl.tudelft.jpacman.level.Level;
-import nl.tudelft.jpacman.level.LevelFactory;
-import nl.tudelft.jpacman.level.MapParser;
-import nl.tudelft.jpacman.level.Player;
-import nl.tudelft.jpacman.level.PlayerFactory;
-import nl.tudelft.jpacman.npc.ghost.GhostFactory;
-import nl.tudelft.jpacman.sprite.PacManSprites;
-import nl.tudelft.jpacman.ui.Action;
-import nl.tudelft.jpacman.ui.PacManUI;
-import nl.tudelft.jpacman.ui.PacManUiBuilder;
-
 /**
  * Creates and launches the JPacMan UI.
- * 
- * @author Jeroen Roosen 
+ *
+ * @author Jeroen Roosen
  */
 public class Launcher {
 
-	private static final PacManSprites SPRITE_STORE = new PacManSprites();
-	private static Launcher instance;
-	
-	private MapParser mapParser;
-	private List<String> maps = new ArrayList<String>();
+    private static final PacManSprites SPRITE_STORE = new PacManSprites();
+    private static Launcher instance;
 
-	private PacManUI pacManUI;
-	private Game game;
-	
-	public Launcher() {
-		this.addMaps("src/main/resources");
-		if(instance==null)
-			Launcher.instance = this;
-	}
+    private MapParser mapParser;
+    private List<String> maps = new ArrayList<String>();
 
-	/**
-	 * @return The game object this launcher will start when {@link #launch()}
-	 *         is called.
-	 */
-	public Game getGame() {
-		return game;
-	}
+    private PacManUI pacManUI;
+    private Game game;
 
-	/**
-	 * Creates a new game using the level from {@link #makeLevel(String)}.
-	 * 
-	 * @return a new Game.
-	 */
-	public Game makeGame() {
-		GameFactory gf = getGameFactory();
-		Level level = makeLevel("/board.txt");
-		level.getBoard().updatePosition();
-		return gf.createSinglePlayerGame(level);
-	}
+    public Launcher() {
+        this.addMaps("src/main/resources");
+        if (instance == null)
+            Launcher.instance = this;
+    }
 
-	/**
-	 * Creates a new level. By default this method will use the map parser to
-	 * parse the default board stored in the <code>board.txt</code> resource.
-	 * 
-	 * @return A new level.
-	 */
-	public Level makeLevel(String file) {
-		if(mapParser == null)
-			mapParser = getMapParser();
-		MapParser parser = mapParser;
-		try (InputStream boardStream = Launcher.class
-				.getResourceAsStream(file)) {
-			return parser.parseMap(boardStream);
-		} catch (IOException e) {
-			throw new PacmanConfigurationException("Unable to create level.", e);
-		}
-	}
-	
-	/**
-	 * Add all the maps in the list.
-	 * @param path The path to the maps directory.
-	 */
-	public void addMaps(String path) {
-		String[] files = new File(path).list(); 
-		String filtre = "board(\\w*).txt";
-		Pattern p = Pattern.compile(filtre); 
-		for (int i=0; i<files.length;i++) 
-		{ 
-			Matcher m = p.matcher(files[i]); 
-			if (m.matches() && !files[i].equals("board.txt")) 
-			{ 
-				maps.add("/" + files[i]); 
-			} 
-		} 
-	}
-	
+    /**
+     * Main execution method for the Launcher.
+     *
+     * @param args The command line arguments - which are ignored.
+     * @throws IOException When a resource could not be read.
+     */
+    public static void main(String[] args) throws IOException {
+        new Launcher().launch();
+    }
 
+    public static final PacManSprites getSPRITE_STORE() {
+        return SPRITE_STORE;
+    }
 
-	/**
-	 * @return A new map parser object using the factories from
-	 *         {@link #getLevelFactory()} and {@link #getBoardFactory()}.
-	 */
-	protected MapParser getMapParser() {
-		return new MapParser(getLevelFactory(), getBoardFactory());
-	}
+    public static Launcher getInstance() {
+        return instance;
+    }
 
-	/**
-	 * @return A new board factory using the sprite store from
-	 *         {@link #getSpriteStore()}.
-	 */
-	protected BoardFactory getBoardFactory() {
-		return new BoardFactory(getSpriteStore());
-	}
+    /**
+     * @return The game object this launcher will start when {@link #launch()}
+     * is called.
+     */
+    public Game getGame() {
+        return game;
+    }
 
-	/**
-	 * @return The default {@link PacManSprites}.
-	 */
-	protected PacManSprites getSpriteStore() {
-		return SPRITE_STORE;
-	}
+    /**
+     * Creates a new game using the level from {@link #makeLevel(String)}.
+     *
+     * @return a new Game.
+     */
+    public Game makeGame() {
+        GameFactory gf = getGameFactory();
+        Level level = makeLevel("/board.txt");
+        level.getBoard().updatePosition();
+        return gf.createSinglePlayerGame(level);
+    }
 
-	/**
-	 * @return A new factory using the sprites from {@link #getSpriteStore()}
-	 *         and the ghosts from {@link #getGhostFactory()}.
-	 */
-	protected LevelFactory getLevelFactory() {
-		return new LevelFactory(getSpriteStore(), getGhostFactory());
-	}
+    /**
+     * Creates a new level. By default this method will use the map parser to
+     * parse the default board stored in the <code>board.txt</code> resource.
+     *
+     * @return A new level.
+     */
+    public Level makeLevel(String file) {
+        if (mapParser == null)
+            mapParser = getMapParser();
+        MapParser parser = mapParser;
+        try (InputStream boardStream = Launcher.class
+                .getResourceAsStream(file)) {
+            return parser.parseMap(boardStream);
+        } catch (IOException e) {
+            throw new PacmanConfigurationException("Unable to create level.", e);
+        }
+    }
 
-	/**
-	 * @return A new factory using the sprites from {@link #getSpriteStore()}.
-	 */
-	protected GhostFactory getGhostFactory() {
-		return new GhostFactory(getSpriteStore());
-	}
+    /**
+     * Add all the maps in the list.
+     *
+     * @param path The path to the maps directory.
+     */
+    public void addMaps(String path) {
+        String[] files = new File(path).list();
+        String filtre = "board(\\w*).txt";
+        Pattern p = Pattern.compile(filtre);
+        for (int i = 0; i < files.length; i++) {
+            Matcher m = p.matcher(files[i]);
+            if (m.matches() && !files[i].equals("board.txt")) {
+                maps.add("/" + files[i]);
+            }
+        }
+    }
 
-	/**
-	 * @return A new factory using the players from {@link #getPlayerFactory()}.
-	 */
-	protected GameFactory getGameFactory() {
-		return new GameFactory(getPlayerFactory());
-	}
+    /**
+     * @return A new map parser object using the factories from
+     * {@link #getLevelFactory()} and {@link #getBoardFactory()}.
+     */
+    protected MapParser getMapParser() {
+        return new MapParser(getLevelFactory(), getBoardFactory());
+    }
 
-	/**
-	 * @return A new factory using the sprites from {@link #getSpriteStore()}.
-	 */
-	protected PlayerFactory getPlayerFactory() {
-		return new PlayerFactory(getSpriteStore());
-	}
+    /**
+     * @return A new board factory using the sprite store from
+     * {@link #getSpriteStore()}.
+     */
+    protected BoardFactory getBoardFactory() {
+        return new BoardFactory(getSpriteStore());
+    }
 
-	/**
-	 * Adds key events UP, DOWN, LEFT and RIGHT to a game.
-	 * 
-	 * @param builder
-	 *            The {@link PacManUiBuilder} that will provide the UI.
-	 * @param game
-	 *            The game that will process the events.
-	 */
-	protected void addSinglePlayerKeys(final PacManUiBuilder builder,
-			final Game game) {
-		final Player p1 = getSinglePlayer(game);
+    /**
+     * @return The default {@link PacManSprites}.
+     */
+    protected PacManSprites getSpriteStore() {
+        return SPRITE_STORE;
+    }
 
-		builder.addKey(KeyEvent.VK_UP, new Action() {
+    /**
+     * @return A new factory using the sprites from {@link #getSpriteStore()}
+     * and the ghosts from {@link #getGhostFactory()}.
+     */
+    protected LevelFactory getLevelFactory() {
+        return new LevelFactory(getSpriteStore(), getGhostFactory());
+    }
 
-			@Override
-			public void doAction() {
-				game.move(p1, Direction.NORTH);
-			}
-		}).addKey(KeyEvent.VK_DOWN, new Action() {
+    /**
+     * @return A new factory using the sprites from {@link #getSpriteStore()}.
+     */
+    protected GhostFactory getGhostFactory() {
+        return new GhostFactory(getSpriteStore());
+    }
 
-			@Override
-			public void doAction() {
-				game.move(p1, Direction.SOUTH);
-			}
-		}).addKey(KeyEvent.VK_LEFT, new Action() {
+    /**
+     * @return A new factory using the players from {@link #getPlayerFactory()}.
+     */
+    protected GameFactory getGameFactory() {
+        return new GameFactory(getPlayerFactory());
+    }
 
-			@Override
-			public void doAction() {
-				game.move(p1, Direction.WEST);
-			}
-		}).addKey(KeyEvent.VK_RIGHT, new Action() {
+    /**
+     * @return A new factory using the sprites from {@link #getSpriteStore()}.
+     */
+    protected PlayerFactory getPlayerFactory() {
+        return new PlayerFactory(getSpriteStore());
+    }
 
-			@Override
-			public void doAction() {
-				game.move(p1, Direction.EAST);
-			}
-		});
+    /**
+     * Adds key events UP, DOWN, LEFT and RIGHT to a game.
+     *
+     * @param builder The {@link PacManUiBuilder} that will provide the UI.
+     * @param game    The game that will process the events.
+     */
+    protected void addSinglePlayerKeys(final PacManUiBuilder builder,
+                                       final Game game) {
+        final Player p1 = getSinglePlayer(game);
 
-	}
+        builder.addKey(KeyEvent.VK_UP, new Action() {
 
-	private Player getSinglePlayer(final Game game) {
-		List<Player> players = game.getPlayers();
-		if (players.isEmpty()) {
-			throw new IllegalArgumentException("Game has 0 players.");
-		}
-		final Player p1 = players.get(0);
-		return p1;
-	}
+            @Override
+            public void doAction() {
+                game.move(p1, Direction.NORTH);
+            }
+        }).addKey(KeyEvent.VK_DOWN, new Action() {
 
-	/**
-	 * Creates and starts a JPac-Man game.
-	 */
-	public void launch() {
-		game = makeGame();
-		PacManUiBuilder builder = new PacManUiBuilder().withDefaultButtons();
-		addSinglePlayerKeys(builder, game);
+            @Override
+            public void doAction() {
+                game.move(p1, Direction.SOUTH);
+            }
+        }).addKey(KeyEvent.VK_LEFT, new Action() {
+
+            @Override
+            public void doAction() {
+                game.move(p1, Direction.WEST);
+            }
+        }).addKey(KeyEvent.VK_RIGHT, new Action() {
+
+            @Override
+            public void doAction() {
+                game.move(p1, Direction.EAST);
+            }
+        });
+
+    }
+
+    private Player getSinglePlayer(final Game game) {
+        List<Player> players = game.getPlayers();
+        if (players.isEmpty()) {
+            throw new IllegalArgumentException("Game has 0 players.");
+        }
+        final Player p1 = players.get(0);
+        return p1;
+    }
+
+    /**
+     * Creates and starts a JPac-Man game.
+     */
+    public void launch() {
+        game = makeGame();
+        PacManUiBuilder builder = new PacManUiBuilder().withDefaultButtons();
+        addSinglePlayerKeys(builder, game);
         game.expand(this.getSinglePlayer(game));
-		pacManUI = builder.build(game);
-		pacManUI.start();
-	}
+        pacManUI = builder.build(game);
+        pacManUI.start();
+    }
 
-	/**
-	 * Disposes of the UI. For more information see {@link javax.swing.JFrame#dispose()}.
-	 */
-	public void dispose() {
-		pacManUI.dispose();
-	}
+    /**
+     * Disposes of the UI. For more information see {@link javax.swing.JFrame#dispose()}.
+     */
+    public void dispose() {
+        pacManUI.dispose();
+    }
 
-	/**
-	 * Main execution method for the Launcher.
-	 * 
-	 * @param args
-	 *            The command line arguments - which are ignored.
-	 * @throws IOException
-	 *             When a resource could not be read.
-	 */
-	public static void main(String[] args) throws IOException {
-		new Launcher().launch();
-	}
-	
-	public static final PacManSprites getSPRITE_STORE() {
-		return SPRITE_STORE;
-	}
-
-	public static Launcher getInstance() {
-		return instance;
-	}
-
-	public List<String> getMaps() {
-		return maps;
-	}
+    public List<String> getMaps() {
+        return maps;
+    }
 }

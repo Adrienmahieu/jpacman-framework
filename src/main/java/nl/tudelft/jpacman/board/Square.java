@@ -11,140 +11,134 @@ import java.util.Map;
 /**
  * A square on a {@link Board}, which can (or cannot, depending on the type) be
  * occupied by units.
- * 
- * @author Jeroen Roosen 
+ *
+ * @author Jeroen Roosen
  */
 public abstract class Square {
 
-	/**
-	 * The units occupying this square, in order of appearance.
-	 */
-	private final List<Unit> occupants;
+    /**
+     * The units occupying this square, in order of appearance.
+     */
+    private final List<Unit> occupants;
 
-	/**
-	 * The collection of squares adjacent to this square.
-	 */
-	private final Map<Direction, Square> neighbours;
-	
-	private int x, y;
+    /**
+     * The collection of squares adjacent to this square.
+     */
+    private final Map<Direction, Square> neighbours;
 
-	/**
-	 * Creates a new, empty square.
-	 */
-	protected Square() {
-		this.occupants = new ArrayList<>();
-		this.neighbours = new EnumMap<>(Direction.class);
-	}
+    private int x, y;
 
-	/**
-	 * Returns the square adjacent to this square.
-	 * 
-	 * @param direction
-	 *            The direction of the adjacent square.
-	 * @return The adjacent square in the given direction.
-	 */
-	public Square getSquareAt(Direction direction) {
-		return neighbours.get(direction);
-	}
+    /**
+     * Creates a new, empty square.
+     */
+    protected Square() {
+        this.occupants = new ArrayList<>();
+        this.neighbours = new EnumMap<>(Direction.class);
+    }
 
-	/**
-	 * Links this square to a neighbour in the given direction. Note that this
-	 * is a one-way connection.
-	 * 
-	 * @param neighbour
-	 *            The neighbour to link.
-	 * @param direction
-	 *            The direction the new neighbour is in, as seen from this cell.
-	 */
-	public void link(Square neighbour, Direction direction) {
-		neighbours.put(direction, neighbour);
-	}
+    /**
+     * Returns the square adjacent to this square.
+     *
+     * @param direction The direction of the adjacent square.
+     * @return The adjacent square in the given direction.
+     */
+    public Square getSquareAt(Direction direction) {
+        return neighbours.get(direction);
+    }
 
-	/**
-	 * Returns an immutable list of units occupying this square, in the order in
-	 * which they occupied this square (i.e. oldest first.)
-	 * 
-	 * @return An immutable list of units occupying this square, in the order in
-	 *         which they occupied this square (i.e. oldest first.)
-	 */
-	public List<Unit> getOccupants() {
-		return ImmutableList.copyOf(occupants);
-	}
+    /**
+     * Links this square to a neighbour in the given direction. Note that this
+     * is a one-way connection.
+     *
+     * @param neighbour The neighbour to link.
+     * @param direction The direction the new neighbour is in, as seen from this cell.
+     */
+    public void link(Square neighbour, Direction direction) {
+        neighbours.put(direction, neighbour);
+    }
 
-	/**
-	 * Adds a new occupant to this square. If the occupant was already present,
-	 * nothing changed.
-	 * 
-	 * @param occupant
-	 *            The unit to occupy this square.
-	 * @return <code>true</code> iff the unit successfully occupied this square.
-	 */
-	boolean put(Unit occupant) {
-		assert occupant != null;
-		if (!occupants.contains(occupant)) {
-			occupants.add(occupant);
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Returns an immutable list of units occupying this square, in the order in
+     * which they occupied this square (i.e. oldest first.)
+     *
+     * @return An immutable list of units occupying this square, in the order in
+     * which they occupied this square (i.e. oldest first.)
+     */
+    public List<Unit> getOccupants() {
+        return ImmutableList.copyOf(occupants);
+    }
 
-	/**
-	 * Removes the unit from this square if it was present.
-	 * 
-	 * @param occupant
-	 *            The unit to be removed from this square.
-	 */
-	void remove(Unit occupant) {
-		assert occupant != null;
-		occupants.remove(occupant);
-	}
+    /**
+     * Adds a new occupant to this square. If the occupant was already present,
+     * nothing changed.
+     *
+     * @param occupant The unit to occupy this square.
+     * @return <code>true</code> iff the unit successfully occupied this square.
+     */
+    boolean put(Unit occupant) {
+        assert occupant != null;
+        if (!occupants.contains(occupant)) {
+            occupants.add(occupant);
+            return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Tests whether all occupants on this square have indeed listed this square
-	 * as the square they are currently occupying.
-	 * 
-	 * @return <code>true</code> iff all occupants of this square have this
-	 *         square listed as the square they are currently occupying.
-	 */
-	protected boolean invariant() {
-		for (Unit occupant : occupants) {
-			if (occupant.getSquare() != this) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * Removes the unit from this square if it was present.
+     *
+     * @param occupant The unit to be removed from this square.
+     */
+    void remove(Unit occupant) {
+        assert occupant != null;
+        occupants.remove(occupant);
+    }
 
-	/**
-	 * Determines whether the unit is allowed to occupy this square.
-	 * 
-	 * @param unit
-	 *            The unit to grant or deny access.
-	 * @return <code>true</code> iff the unit is allowed to occupy this square.
-	 */
-	public abstract boolean isAccessibleTo(Unit unit);
+    /**
+     * Tests whether all occupants on this square have indeed listed this square
+     * as the square they are currently occupying.
+     *
+     * @return <code>true</code> iff all occupants of this square have this
+     * square listed as the square they are currently occupying.
+     */
+    protected boolean invariant() {
+        for (Unit occupant : occupants) {
+            if (occupant.getSquare() != this) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Returns the sprite of this square.
-	 * 
-	 * @return The sprite of this square.
-	 */
-	public abstract Sprite getSprite();
+    /**
+     * Determines whether the unit is allowed to occupy this square.
+     *
+     * @param unit The unit to grant or deny access.
+     * @return <code>true</code> iff the unit is allowed to occupy this square.
+     */
+    public abstract boolean isAccessibleTo(Unit unit);
 
-	public int getX() {
-		return x;
-	}
+    /**
+     * Returns the sprite of this square.
+     *
+     * @return The sprite of this square.
+     */
+    public abstract Sprite getSprite();
 
-	public void setX(int x) {
-		this.x = x;
-	}
+    public int getX() {
+        return x;
+    }
 
-	public int getY() {
-		return y;
-	}
+    public void setX(int x) {
+        this.x = x;
+    }
 
-	public void setY(int y) {
-		this.y = y;
-	}
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
 
 }
